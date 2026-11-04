@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form 4 KSSM Math: Chapter 3 Logical Reasoning Quiz System</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- MathJax for rendering LaTeX expressions -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-white/10 p-2 rounded-lg backdrop-blur-sm">
+          <svg class="w-6 h-6 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 002 2v14a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight">Form 4 KSSM Mathematics</h1>
+          <p class="text-xs text-indigo-200">Chapter 3: Logical Reasoning</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex space-x-1 bg-indigo-800/60 p-1 rounded-xl text-sm font-medium">
+        <button id="nav-quiz-btn" onclick="switchTab('quiz')" class="px-4 py-1.5 rounded-lg transition-all bg-white text-indigo-700 shadow-sm">
+          Take Quiz
+        </button>
+        <button id="nav-teacher-btn" onclick="switchTab('teacher')" class="px-4 py-1.5 rounded-lg text-indigo-100 hover:text-white transition-all">
+          Teacher Dashboard
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- ==================== QUIZ SECTION ==================== -->
+    <section id="quiz-section" class="block space-y-6">
+      
+      <!-- Student Configuration Panel -->
+      <div id="quiz-setup-card" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 max-w-2xl mx-auto">
+        <div class="text-center mb-6">
+          <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">KSSM Interactive Module</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-2">Logical Reasoning Practice</h2>
+          <p class="text-slate-600 text-sm mt-1">Configure your practice set. Questions are dynamically generated every time.</p>
+        </div>
+
+        <form id="setup-form" onsubmit="event.preventDefault(); startQuiz();" class="space-y-5">
+          <div>
+            <label for="student-name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Student Full Name</label>
+            <input type="text" id="student-name" required placeholder="e.g. Ahmad Rayyan" 
+                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm">
+          </div>
+
+          <!-- UPDATED CLASS DROPDOWN HERE -->
+          <div>
+            <label for="student-class" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Class / Form</label>
+            <select id="student-class" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm">
+              <option value="4S1">4S1</option>
+              <option value="4S2">4S2</option>
+              <option value="4S3">4S3</option>
+              <option value="4C">4C</option>
+              <option value="4SS1">4SS1</option>
+              <option value="4SS2">4SS2</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="question-count" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Number of Questions</label>
+            <select id="question-count" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm">
+              <option value="5">5 Questions (Quick Test)</option>
+              <option value="10" selected>10 Questions (Standard)</option>
+              <option value="15">15 Questions (Challenge)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-200 transition-all transform active:scale-95 flex items-center justify-center space-x-2 text-sm">
+            <span>Start Practice Quiz</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Active Quiz Interface -->
+      <div id="quiz-active-card" class="hidden max-w-3xl mx-auto space-y-6">
+        
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm" id="progress-indicator">
+              1/10
+            </div>
+            <div>
+              <p class="text-xs text-slate-500">Student: <span id="display-student-name" class="font-semibold text-slate-800"></span></p>
+              <p class="text-xs text-slate-400">Class: <span id="display-student-class"></span></p>
+            </div>
+          </div>
+
+          <div class="w-1/3">
+            <div class="flex justify-between text-xs text-slate-500 mb-1">
+              <span>Progress</span>
+              <span id="progress-percent">10%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div id="progress-bar-fill" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <span id="question-topic-badge" class="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold rounded-full">
+              Subtopic
+            </span>
+            <span id="question-difficulty-badge" class="px-2.5 py-0.5 text-xs font-medium rounded-full bg-slate-100 text-slate-600">
+              Medium
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-600">Instruction</h3>
+            <div id="question-instruction" class="text-slate-700 text-sm font-medium"></div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 font-mono text-sm sm:text-base text-slate-900 leading-relaxed" id="question-text">
+            </div>
+          </div>
+
+          <div id="options-container" class="space-y-3 pt-2"></div>
+
+          <div id="feedback-box" class="hidden p-5 rounded-xl border transition-all duration-300 space-y-3">
+            <div class="flex items-center space-x-2 font-bold text-sm" id="feedback-title"></div>
+            <div class="text-sm leading-relaxed" id="feedback-explanation"></div>
+          </div>
+
+          <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+            <button id="submit-answer-btn" onclick="submitAnswer()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+              Submit Answer
+            </button>
+            <button id="next-question-btn" onclick="nextQuestion()" class="hidden bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-6 rounded-xl shadow-md transition text-sm flex items-center space-x-2">
+              <span>Next Question</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Summary Card -->
+      <div id="quiz-summary-card" class="hidden max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+        <div class="text-center space-y-2">
+          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+            ✓
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Quiz Completed!</h2>
+          <p class="text-slate-600 text-sm">Great job completing the Logical Reasoning practice module.</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 py-4 border-y border-slate-100 text-center">
+          <div>
+            <p class="text-xs text-slate-500 uppercase font-semibold">Total Score</p>
+            <p id="summary-score" class="text-2xl font-extrabold text-indigo-600">0 / 0</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 uppercase font-semibold">Percentage</p>
+            <p id="summary-percentage" class="text-2xl font-extrabold text-slate-800">0%</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 uppercase font-semibold">Performance</p>
+            <p id="summary-grade" class="text-2xl font-extrabold text-emerald-600">-</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600">Subtopic Performance</h4>
+          <div id="subtopic-breakdown" class="space-y-2"></div>
+        </div>
+
+        <div class="flex space-x-3 pt-4">
+          <button onclick="restartQuiz()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition text-sm">
+            Attempt New Quiz
+          </button>
+          <button onclick="switchTab('teacher')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-4 rounded-xl transition text-sm">
+            View Analytics
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TEACHER DASHBOARD ==================== -->
+    <section id="teacher-section" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Teacher Performance Analytics</h2>
+          <p class="text-slate-500 text-sm">Monitor student attempts, scores, and subtopic mastery.</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="exportCSV()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-sm transition flex items-center space-x-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <span>Export CSV</span>
+          </button>
+          <button onclick="clearRecords()" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs font-semibold rounded-xl transition">
+            Clear Data
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-400 uppercase">Total Attempts</p>
+          <p id="dash-total-attempts" class="text-2xl font-bold text-slate-800 mt-1">0</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-400 uppercase">Average Score</p>
+          <p id="dash-avg-score" class="text-2xl font-bold text-indigo-600 mt-1">0%</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-400 uppercase">Highest Score</p>
+          <p id="dash-max-score" class="text-2xl font-bold text-emerald-600 mt-1">0%</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-400 uppercase">Weakest Area</p>
+          <p id="dash-weak-area" class="text-sm font-bold text-amber-600 mt-1 truncate">None recorded</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+          <h3 class="font-bold text-sm text-slate-700">Recent Quiz Records</h3>
+          <span class="text-xs text-slate-500">Stored locally in browser</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-600">
+            <thead class="bg-slate-50 text-xs uppercase font-bold text-slate-500 border-b border-slate-200">
+              <tr>
+                <th class="px-6 py-3">Timestamp</th>
+                <th class="px-6 py-3">Student Name</th>
+                <th class="px-6 py-3">Class</th>
+                <th class="px-6 py-3">Score</th>
+                <th class="px-6 py-3">Percentage</th>
+                <th class="px-6 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="student-table-body" class="divide-y divide-slate-100">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+    Form 4 KSSM Mathematics Interactive Assessment System &bull; Logical Reasoning Chapter 3
+  </footer>
+
+  <script>
+    const atomicStatements = [
+      { p: "$12$ is a multiple of $4$", pVal: true, q: "$12$ is an even number", qVal: true },
+      { p: "$7$ is a prime number", pVal: true, q: "$7$ is divisible by $2$", qVal: false },
+      { p: "$x + 3 = 7$ when $x = 4$", pVal: true, q: "$4^2 = 16$", qVal: true },
+      { p: "A square has $5$ sides", pVal: false, q: "A pentagon has $5$ sides", pVal: true },
+      { p: "$-3 > -2$", pVal: false, q: "$(-3)^2 = 9$", qVal: true },
+      { p: "$5 \\times 0 = 5$", pVal: false, q: "$5 + 0 = 5$", qVal: true },
+      { p: "$\\{2, 3\\} \\subset \\{1, 2, 3, 4\\}$", pVal: true, q: "$\\{2, 3\\}$ has $4$ subsets", qVal: true },
+      { p: "$30^\\circ$ is an acute angle", pVal: true, q: "$\\sin(30^\\circ) = 0.5$", qVal: true },
+      { p: "All rectangles are squares", pVal: false, q: "All squares are rectangles", qVal: true },
+      { p: "$3 + 8 = 11$", pVal: true, q: "$11$ is an odd number", qVal: true },
+      { p: "$\\sqrt{16} = \\pm 4$", pVal: false, q: "$\\sqrt{16} = 4$", qVal: true },
+      { p: "$2^3 = 6$", pVal: false, q: "$2^3 = 8$", qVal: true }
+    ];
+
+    function negateText(text, val) {
+      if (text.includes("is an even number")) return { text: text.replace("is an even number", "is an odd number"), val: !val };
+      if (text.includes("is a multiple of")) return { text: text.replace("is a multiple of", "is not a multiple of"), val: !val };
+      if (text.includes("is a prime number")) return { text: text.replace("is a prime number", "is a composite number"), val: !val };
+      if (text.includes("is divisible by")) return { text: text.replace("is divisible by", "is not divisible by"), val: !val };
+      if (text.includes("has $5$ sides")) return { text: text.replace("has $5$ sides", "does not have $5$ sides"), val: !val };
+      if (text.includes(">")) return { text: text.replace(">", "\\le"), val: !val };
+      if (text.includes("=")) return { text: text.replace("=", "\\ne"), val: !val };
+      if (text.includes("\\subset")) return { text: text.replace("\\subset", "\\not\\subset"), val: !val };
+      if (text.includes("is an acute angle")) return { text: text.replace("is an acute angle", "is an obtuse angle"), val: !val };
+      if (text.includes("All rectangles are squares")) return { text: "Some rectangles are not squares", val: !val };
+      if (text.includes("All squares are rectangles")) return { text: "Some squares are not rectangles", val: !val };
+      if (text.includes("is an odd number")) return { text: text.replace("is an odd number", "is an even number"), val: !val };
+      return { text: "It is false that " + text, val: !val };
+    }
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function generateQuestion(index) {
+      const types = ['IDENTIFY_STATEMENT', 'NEGATION', 'TRUTH_VALUE_COMPOUND', 'CONVERSE', 'INVERSE', 'CONTRAPOSITIVE', 'IMPLICATION_TRUTH', 'COMBINED_TRANSFORMATION_TRUTH'];
+      const chosenType = types[index % types.length];
+      const base = atomicStatements[Math.floor(Math.random() * atomicStatements.length)];
+
+      switch (chosenType) {
+        case 'IDENTIFY_STATEMENT': {
+          const isStatement = Math.random() > 0.3;
+          let questionText, ansOptions, explanation;
+          if (isStatement) {
+            questionText = `Determine whether the following expression is a statement:\n\n"${base.p}"`;
+            ansOptions = [{ text: "Statement", isCorrect: true, rationale: "" }, { text: "Not a statement", isCorrect: false, rationale: "" }];
+            explanation = `"${base.p}" is a **statement** because it is a declarative sentence that is either true or false.`;
+          } else {
+            const nonStatements = ["Please solve $2x + 5 = 9$.", "How many sides does a hexagon have?", "$x + 7 > 10$", "What a beautiful triangle!"];
+            const nonStmt = nonStatements[Math.floor(Math.random() * nonStatements.length)];
+            questionText = `Determine whether the following expression is a statement:\n\n"${nonStmt}"`;
+            ansOptions = [{ text: "Not a statement", isCorrect: true, rationale: "" }, { text: "Statement", isCorrect: false, rationale: "" }];
+            explanation = `"${nonStmt}" is **not a statement** because it contains an unknown variable or is a question/command.`;
+          }
+          return { topic: "Statements & Truth Values", difficulty: "Easy", instruction: "Identify whether the given mathematical sentence is a statement.", text: questionText, options: shuffleArray(ansOptions), explanation: explanation };
+        }
+        case 'NEGATION': {
+          const negP = negateText(base.p, base.pVal);
+          const questionText = `Find the negation of the statement:\n\n"$p$: ${base.p}"`;
+          const options = [
+            { text: `$\\sim p$: ${negP.text}`, isCorrect: true },
+            { text: `$\\sim p$: ${base.p}`, isCorrect: false },
+            { text: `$\\sim p$: ${base.q}`, isCorrect: false },
+            { text: `$\\sim p$: ${negateText(base.q, base.qVal).text}`, isCorrect: false }
+          ];
+          return { topic: "Negation of Statements", difficulty: "Easy", instruction: "Form the negation ($\\sim p$) of the given statement.", text: questionText, options: shuffleArray(options), explanation: `The negation of statement $p$ reverses its truth value. Thus, $\\sim p$ is: "${negP.text}".` };
+        }
+        case 'TRUTH_VALUE_COMPOUND': {
+          const isAnd = Math.random() > 0.5;
+          const operator = isAnd ? "and" : "or";
+          const resultVal = isAnd ? (base.pVal && base.qVal) : (base.pVal || base.qVal);
+          const questionText = `Determine the truth value of the compound statement:\n\n"${base.p} **${operator}** ${base.q}"`;
+          const options = [{ text: resultVal ? "True" : "False", isCorrect: true }, { text: resultVal ? "False" : "True", isCorrect: false }];
+          return { topic: "Compound Statements", difficulty: "Medium", instruction: "Evaluate the truth value of the compound statement.", text: questionText, options: shuffleArray(options), explanation: `Statement $p$ is **${base.pVal ? 'True' : 'False'}**.\nStatement $q$ is **${base.qVal ? 'True' : 'False'}**.\nFor the connective **'${operator}'**, the combined truth value is **${resultVal ? 'True' : 'False'}**.` };
+        }
+        case 'CONVERSE': {
+          const questionText = `Given the implication:\n\n"If ${base.p}, then ${base.q}"\n\nWhich statement represents its **Converse**?`;
+          const options = [
+            { text: `If ${base.q}, then ${base.p}`, isCorrect: true },
+            { text: `If not ${base.p}, then not ${base.q}`, isCorrect: false },
+            { text: `If not ${base.q}, then not ${base.p}`, isCorrect: false },
+            { text: `If ${base.p}, then not ${base.q}`, isCorrect: false }
+          ];
+          return { topic: "Implications (Converse)", difficulty: "Medium", instruction: "Identify the correct converse transformation.", text: questionText, options: shuffleArray(options), explanation: `For an implication $p \\Rightarrow q$, the **Converse** is formed by interchanging the antecedent and consequent: **If $q$, then $p$**.` };
+        }
+        case 'INVERSE': {
+          const negP = negateText(base.p, base.pVal).text;
+          const negQ = negateText(base.q, base.qVal).text;
+          const questionText = `Given the implication:\n\n"If ${base.p}, then ${base.q}"\n\nWhich statement represents its **Inverse**?`;
+          const options = [
+            { text: `If ${negP}, then ${negQ}`, isCorrect: true },
+            { text: `If ${base.q}, then ${base.p}`, isCorrect: false },
+            { text: `If ${negQ}, then ${negP}`, isCorrect: false },
+            { text: `If ${base.p}, then ${negQ}`, isCorrect: false }
+          ];
+          return { topic: "Implications (Inverse)", difficulty: "Medium", instruction: "Identify the correct inverse transformation.", text: questionText, options: shuffleArray(options), explanation: `For an implication $p \\Rightarrow q$, the **Inverse** is formed by negating both statements: **If $\\sim p$, then $\\sim q$**.` };
+        }
+        case 'CONTRAPOSITIVE': {
+          const negP = negateText(base.p, base.pVal).text;
+          const negQ = negateText(base.q, base.qVal).text;
+          const questionText = `Given the implication:\n\n"If ${base.p}, then ${base.q}"\n\nWhich statement represents its **Contrapositive**?`;
+          const options = [
+            { text: `If ${negQ}, then ${negP}`, isCorrect: true },
+            { text: `If ${negP}, then ${negQ}`, isCorrect: false },
+            { text: `If ${base.q}, then ${base.p}`, isCorrect: false },
+            { text: `If not ${base.p}, then ${base.q}`, isCorrect: false }
+          ];
+          return { topic: "Implications (Contrapositive)", difficulty: "Hard", instruction: "Identify the correct contrapositive statement.", text: questionText, options: shuffleArray(options), explanation: `For an implication $p \\Rightarrow q$, the **Contrapositive** swaps and negates both parts: **If $\\sim q$, then $\\sim p$**.` };
+        }
+        case 'IMPLICATION_TRUTH': {
+          const impTruth = (!base.pVal || base.qVal);
+          const questionText = `Determine the truth value of the implication:\n\n"If ${base.p}, then ${base.q}"`;
+          const options = [{ text: impTruth ? "True" : "False", isCorrect: true }, { text: impTruth ? "False" : "True", isCorrect: false }];
+          return { topic: "Truth Values of Implications", difficulty: "Hard", instruction: "Evaluate the truth value of the given implication.", text: questionText, options: shuffleArray(options), explanation: `Antecedent $p$ is **${base.pVal ? 'True' : 'False'}**.\nConsequent $q$ is **${base.qVal ? 'True' : 'False'}**.\nAn implication $p \\Rightarrow q$ is **False only when $p$ is True and $q$ is False**. Therefore, this implication is **${impTruth ? 'True' : 'False'}**.` };
+        }
+        case 'COMBINED_TRANSFORMATION_TRUTH': {
+          const negP = negateText(base.p, base.pVal);
+          const negQ = negateText(base.q, base.qVal);
+          const invTruth = (!negP.val || negQ.val);
+          const questionText = `Consider the implication:\n"If ${base.p}, then ${base.q}"\n\nState the **Inverse** and determine its **truth value**.`;
+          const correctInvStatement = `If ${negP.text}, then ${negQ.text}`;
+          const options = [
+            { text: `Inverse: "${correctInvStatement}"\nTruth Value: ${invTruth ? "True" : "False"}`, isCorrect: true },
+            { text: `Inverse: "${correctInvStatement}"\nTruth Value: ${!invTruth ? "True" : "False"}`, isCorrect: false },
+            { text: `Inverse: "If ${base.q}, then ${base.p}"\nTruth Value: ${invTruth ? "True" : "False"}`, isCorrect: false },
+            { text: `Inverse: "If ${negQ.text}, then ${negP.text}"\nTruth Value: ${invTruth ? "True" : "False"}`, isCorrect: false }
+          ];
+          return { topic: "Combined Logic & Truth Values", difficulty: "Hard", instruction: "Identify the correct transformed statement and calculate its truth value.", text: questionText, options: shuffleArray(options), explanation: `1. **Inverse**: Negate both parts ($\\sim p \\Rightarrow \\sim q$): "If ${negP.text}, then ${negQ.text}".\n2. **Truth Value**: $\\sim p$ is **${negP.val ? 'True' : 'False'}**, $\\sim q$ is **${negQ.val ? 'True' : 'False'}**.\n3. The implication $\\sim p \\Rightarrow \\sim q$ is **${invTruth ? 'True' : 'False'}**.` };
+        }
+      }
+    }
+
+    let currentQuizState = { studentName: '', studentClass: '', totalQuestions: 10, questions: [], currentIndex: 0, userAnswers: [], score: 0, subtopicScores: {} };
+
+    function switchTab(tabName) {
+      const qSec = document.getElementById('quiz-section'), tSec = document.getElementById('teacher-section');
+      const qBtn = document.getElementById('nav-quiz-btn'), tBtn = document.getElementById('nav-teacher-btn');
+      if (tabName === 'quiz') {
+        qSec.classList.remove('hidden'); tSec.classList.add('hidden');
+        qBtn.className = "px-4 py-1.5 rounded-lg transition-all bg-white text-indigo-700 shadow-sm";
+        tBtn.className = "px-4 py-1.5 rounded-lg text-indigo-100 hover:text-white transition-all";
+      } else {
+        qSec.classList.add('hidden'); tSec.classList.remove('hidden');
+        tBtn.className = "px-4 py-1.5 rounded-lg transition-all bg-white text-indigo-700 shadow-sm";
+        qBtn.className = "px-4 py-1.5 rounded-lg text-indigo-100 hover:text-white transition-all";
+        loadTeacherDashboard();
+      }
+    }
+
+    function startQuiz() {
+      const name = document.getElementById('student-name').value.trim();
+      const cls = document.getElementById('student-class').value;
+      const cnt = parseInt(document.getElementById('question-count').value);
+      if (!name) return;
+      currentQuizState = { studentName: name, studentClass: cls, totalQuestions: cnt, questions: [], currentIndex: 0, userAnswers: [], score: 0, subtopicScores: {} };
+      for (let i = 0; i < cnt; i++) currentQuizState.questions.push(generateQuestion(i));
+      document.getElementById('quiz-setup-card').classList.add('hidden');
+      document.getElementById('quiz-summary-card').classList.add('hidden');
+      document.getElementById('quiz-active-card').classList.remove('hidden');
+      document.getElementById('display-student-name').innerText = name;
+      document.getElementById('display-student-class').innerText = cls;
+      renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+      const q = currentQuizState.questions[currentQuizState.currentIndex], total = currentQuizState.totalQuestions, idx = currentQuizState.currentIndex;
+      document.getElementById('progress-indicator').innerText = `${idx + 1}/${total}`;
+      document.getElementById('progress-percent').innerText = `${Math.round(((idx + 1) / total) * 100)}%`;
+      document.getElementById('progress-bar-fill').style.width = `${((idx + 1) / total) * 100}%`;
+      document.getElementById('question-topic-badge').innerText = q.topic;
+      document.getElementById('question-difficulty-badge').innerText = q.difficulty;
+      document.getElementById('question-instruction').innerText = q.instruction;
+      document.getElementById('question-text').innerHTML = q.text.replace(/\n/g, '<br>');
+      
+      const opts = document.getElementById('options-container'); opts.innerHTML = '';
+      q.options.forEach((opt, oIdx) => {
+        const btn = document.createElement('button');
+        btn.className = `option-btn w-full text-left p-4 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 transition flex items-start space-x-3 text-sm font-medium text-slate-700`;
+        btn.onclick = () => selectOption(oIdx);
+        btn.innerHTML = `<span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-xs shrink-0 border border-slate-200">${String.fromCharCode(65 + oIdx)}</span><span class="flex-grow whitespace-pre-line">${opt.text}</span>`;
+        opts.appendChild(btn);
+      });
+      document.getElementById('feedback-box').className = "hidden p-5 rounded-xl border transition-all duration-300 space-y-3";
+      document.getElementById('submit-answer-btn').classList.remove('hidden'); document.getElementById('submit-answer-btn').disabled = true;
+      document.getElementById('next-question-btn').classList.add('hidden');
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    let selectedOptionIdx = null;
+    function selectOption(index) {
+      selectedOptionIdx = index;
+      document.querySelectorAll('.option-btn').forEach((btn, idx) => {
+        btn.className = idx === index ? "option-btn w-full text-left p-4 rounded-xl border-2 border-indigo-600 bg-indigo-50/80 transition flex items-start space-x-3 text-sm font-semibold text-indigo-950 shadow-sm" : "option-btn w-full text-left p-4 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 transition flex items-start space-x-3 text-sm font-medium text-slate-700";
+      });
+      document.getElementById('submit-answer-btn').disabled = false;
+    }
+
+    function submitAnswer() {
+      if (selectedOptionIdx === null) return;
+      const q = currentQuizState.questions[currentQuizState.currentIndex], isCorrect = q.options[selectedOptionIdx].isCorrect;
+      if (!currentQuizState.subtopicScores[q.topic]) currentQuizState.subtopicScores[q.topic] = { correct: 0, total: 0 };
+      currentQuizState.subtopicScores[q.topic].total++;
+      if (isCorrect) { currentQuizState.score++; currentQuizState.subtopicScores[q.topic].correct++; }
+      
+      const fBox = document.getElementById('feedback-box'), fTitle = document.getElementById('feedback-title'), fExp = document.getElementById('feedback-explanation');
+      fBox.classList.remove('hidden');
+      fBox.className = isCorrect ? "p-5 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-900 space-y-2" : "p-5 rounded-xl border bg-rose-50 border-rose-200 text-rose-900 space-y-2";
+      fTitle.innerHTML = isCorrect ? `<span class="text-emerald-600 font-bold">✓ Correct!</span>` : `<span class="text-rose-600 font-bold">✕ Incorrect</span>`;
+      fExp.innerHTML = `<p class="font-medium text-xs uppercase tracking-wider text-slate-500 mb-1">Mathematical Explanation:</p><div class="text-sm leading-relaxed">${q.explanation.replace(/\n/g, '<br>')}</div>`;
+      
+      document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+      document.getElementById('submit-answer-btn').classList.add('hidden'); document.getElementById('next-question-btn').classList.remove('hidden');
+      if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    function nextQuestion() {
+      selectedOptionIdx = null; currentQuizState.currentIndex++;
+      if (currentQuizState.currentIndex < currentQuizState.totalQuestions) renderCurrentQuestion();
+      else finishQuiz();
+    }
+
+    function finishQuiz() {
+      document.getElementById('quiz-active-card').classList.add('hidden'); document.getElementById('quiz-summary-card').classList.remove('hidden');
+      const pct = Math.round((currentQuizState.score / currentQuizState.totalQuestions) * 100);
+      document.getElementById('summary-score').innerText = `${currentQuizState.score} / ${currentQuizState.totalQuestions}`;
+      document.getElementById('summary-percentage').innerText = `${pct}%`;
+      const gElem = document.getElementById('summary-grade');
+      gElem.innerText = pct >= 80 ? "A (Excellent)" : pct >= 65 ? "B (Good)" : pct >= 50 ? "C (Satisfactory)" : "D (Needs Practice)";
+      gElem.className = `text-2xl font-extrabold ${pct >= 80 ? 'text-emerald-600' : pct >= 65 ? 'text-indigo-600' : pct >= 50 ? 'text-amber-600' : 'text-rose-600'}`;
+      
+      const bDown = document.getElementById('subtopic-breakdown'); bDown.innerHTML = '';
+      for (const [t, data] of Object.entries(currentQuizState.subtopicScores)) {
+        const iPct = Math.round((data.correct / data.total) * 100);
+        bDown.innerHTML += `<div class="flex items-center justify-between text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200"><span class="font-medium text-slate-700">${t}</span><span class="font-bold ${iPct >= 70 ? 'text-emerald-600' : 'text-rose-600'}">${data.correct}/${data.total} (${iPct}%)</span></div>`;
+      }
+      
+      let records = JSON.parse(localStorage.getItem('kssm_math_quiz_records') || '[]');
+      records.unshift({ timestamp: new Date().toLocaleString('en-GB'), name: currentQuizState.studentName, class: currentQuizState.studentClass, score: `${currentQuizState.score}/${currentQuizState.totalQuestions}`, percentage: pct, subtopics: currentQuizState.subtopicScores });
+      localStorage.setItem('kssm_math_quiz_records', JSON.stringify(records));
+    }
+
+    function restartQuiz() { document.getElementById('quiz-summary-card').classList.add('hidden'); document.getElementById('quiz-setup-card').classList.remove('hidden'); }
+
+    function loadTeacherDashboard() {
+      const records = JSON.parse(localStorage.getItem('kssm_math_quiz_records') || '[]');
+      const tbody = document.getElementById('student-table-body'); tbody.innerHTML = '';
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400 text-xs">No student attempts recorded yet.</td></tr>`;
+        document.getElementById('dash-total-attempts').innerText = "0"; document.getElementById('dash-avg-score').innerText = "0%"; document.getElementById('dash-max-score').innerText = "0%"; document.getElementById('dash-weak-area').innerText = "None recorded";
+        return;
+      }
+      let tPct = 0, mPct = 0, tStats = {};
+      records.forEach(r => {
+        tPct += r.percentage; if (r.percentage > mPct) mPct = r.percentage;
+        if (r.subtopics) for (const [t, d] of Object.entries(r.subtopics)) { if (!tStats[t]) tStats[t] = { correct: 0, total: 0 }; tStats[t].correct += d.correct; tStats[t].total += d.total; }
+        tbody.innerHTML += `<tr class="hover:bg-slate-50 transition"><td class="px-6 py-4 text-xs font-medium text-slate-500">${r.timestamp}</td><td class="px-6 py-4 font-semibold text-slate-800">${r.name}</td><td class="px-6 py-4 text-xs text-slate-600">${r.class}</td><td class="px-6 py-4 font-mono font-bold text-indigo-600">${r.score}</td><td class="px-6 py-4 font-bold text-slate-700">${r.percentage}%</td><td class="px-6 py-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-full ${r.percentage >= 60 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${r.percentage >= 60 ? 'Passed' : 'Needs Review'}</span></td></tr>`;
+      });
+      document.getElementById('dash-total-attempts').innerText = records.length; document.getElementById('dash-avg-score').innerText = `${Math.round(tPct / records.length)}%`; document.getElementById('dash-max-score').innerText = `${mPct}%`;
+      let minPct = 101, wTop = "None";
+      for (const [t, d] of Object.entries(tStats)) { const p = (d.correct / d.total) * 100; if (p < minPct) { minPct = p; wTop = t; } }
+      document.getElementById('dash-weak-area').innerText = wTop !== "None" ? `${wTop} (${Math.round(minPct)}%)` : "N/A";
+    }
+
+    function exportCSV() {
+      const records = JSON.parse(localStorage.getItem('kssm_math_quiz_records') || '[]');
+      if (records.length === 0) return alert("No quiz records available to export!");
+      let csv = "data:text/csv;charset=utf-8,Timestamp,Student Name,Class,Score,Percentage\n";
+      records.forEach(r => csv += `"${r.timestamp}","${r.name}","${r.class}","${r.score}",${r.percentage}%\n`);
+      const link = document.createElement("a"); link.setAttribute("href", encodeURI(csv)); link.setAttribute("download", `kssm_logical_reasoning_results.csv`);
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    function clearRecords() {
+      if (confirm("Clear all student records? Cannot be undone.")) { localStorage.removeItem('kssm_math_quiz_records'); loadTeacherDashboard(); }
+    }
+  </script>
+</body>
+</html>
